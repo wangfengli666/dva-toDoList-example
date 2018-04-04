@@ -1,0 +1,57 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/bin/yarn install
+
+PATH: 
+  /Library/Frameworks/Python.framework/Versions/3.6/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+Yarn version: 
+  1.2.1
+
+Node version: 
+  9.5.0
+
+Platform: 
+  darwin x64
+
+npm manifest: 
+  {
+    "private": true,
+    "scripts": {
+      "start": "roadhog server",
+      "build": "roadhog build",
+      "lint": "eslint --ext .js src test",
+      "precommit": "npm run lint"
+    },
+    "engines": {
+      "install-node": "6.11.1"
+    },
+    "dependencies": {
+      "babel-runtime": "^6.9.2",
+      "dva": "^2.1.0",
+      "react": "^15.4.0",
+      "react-dom": "^15.4.0"
+    },
+    "devDependencies": {
+      "babel-eslint": "^7.1.1",
+      "babel-plugin-dva-hmr": "^0.3.2",
+      "babel-plugin-transform-runtime": "^6.9.0",
+      "eslint": "^3.12.2",
+      "eslint-config-airbnb": "^13.0.0",
+      "eslint-plugin-import": "^2.2.0",
+      "eslint-plugin-jsx-a11y": "^2.2.3",
+      "eslint-plugin-react": "^6.8.0",
+      "expect": "^1.20.2",
+      "husky": "^0.12.0",
+      "redbox-react": "^1.4.3",
+      "roadhog": "^1.2.1"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  Error: ENOENT: no such file or directory, copyfile '/Users/wfl/Library/Caches/Yarn/v1/npm-define-property-2.0.2-d459689e8d654ba77e02a817f8710d702cb16e9d/CHANGELOG.md' -> '/Users/wfl/Documents/x/learing/toDoList/node_modules/anymatch/node_modules/define-property/CHANGELOG.md'
