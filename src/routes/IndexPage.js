@@ -7,12 +7,10 @@ const CheckboxGroup = Checkbox.Group;
 
 
 class IndexPage extends React.Component {
-  constructor(props){
-    super(props);
-  }
   state = {
     inputValue: '',
     checkedValues: [],
+    randomNumber: null,
   };
   onChange = (checkedValues) => {
     this.setState({ checkedValues });
@@ -41,27 +39,27 @@ class IndexPage extends React.Component {
       },
     });
   }
-  async onGetNewRandomData() {
-    const { dispatch } = this.props;
-    try {
-      const num = await dispatch({
-        type: 'example/onGetNewRandomData',
-        payload: {
-        },
-      });
-      return num;
-    } catch (e) {
-      console.log('try catch', e);
-    }
-  }
-  onClick() {
-    this.generateNum = setInterval(() => {
-      this.onGetNewRandomData().then((res) => {
-        if (res % 2 === 0) {
-          clearInterval(this.generateNum);
-        }
-      });
-    }, 500);
+  onGetNewRandomData = () => {
+    return new Promise((resolve, reject) => {
+      try {
+        setTimeout(() => {
+          const num = Math.floor(Math.random() * 100);
+          resolve(num);
+        }, 500);
+      } catch (e) {
+        reject(e);
+      }
+    });
+  };
+  async onClick() {
+    const num = await this.onGetNewRandomData();
+    this.setState({
+      randomNumber: num,
+    }, () => {
+      if (num % 2 !== 0) {
+        this.onClick();
+      }
+    });
   }
   handleInputChange = (e) => {
     this.setState({ inputValue: e.target.value });
@@ -85,8 +83,8 @@ class IndexPage extends React.Component {
   saveInputRef = input => this.input = input
 
   render() {
-    const { inputValue, checkedValues } = this.state;
-    const { tags, randomNumber } = this.props.example;
+    const { inputValue, checkedValues, randomNumber } = this.state;
+    const { tags } = this.props.example;
     return (
       <div className={styles.normal}>
         <Divider>点击生成偶数随机数</Divider>
