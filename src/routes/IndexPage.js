@@ -1,30 +1,27 @@
 import React from 'react';
 import { connect } from 'dva';
 import { Input, Divider, Checkbox, Button, Row, Col } from 'antd';
-
-const CheckboxGroup = Checkbox.Group;
 import styles from './IndexPage.css';
 
+const CheckboxGroup = Checkbox.Group;
+
+
 class IndexPage extends React.Component {
+  constructor(props){
+    super(props);
+  }
   state = {
     inputValue: '',
     checkedValues: [],
   };
-  handleInputChange = (e) => {
-    this.setState({ inputValue: e.target.value });
-  }
   onChange = (checkedValues) => {
-    console.log('checkedValues', checkedValues);
     this.setState({ checkedValues });
   }
   async onDelete() {
     try {
       const result = await this.onRemoveTagsDispatch().then(() => {
-        console.log('await remove success');
       }).finally(() => {
-        console.log('await remove finally');
       }).catch(() => {
-        console.log('await remove catch');
       });
       if (result === 'success') {
         this.setState({
@@ -37,18 +34,37 @@ class IndexPage extends React.Component {
   }
   onRemoveTagsDispatch = () => {
     const { dispatch } = this.props;
-    return new Promise((resolve, reject) => {
-      dispatch({
-        type: 'example/removeMutiTags',
-        payload: {
-          tags: this.state.checkedValues,
-        },
-      }).then(() => {
-        resolve('success');
-      }).catch((error) => {
-        reject(error);
-      });
+    return dispatch({
+      type: 'example/removeMutiTags',
+      payload: {
+        tags: this.state.checkedValues,
+      },
     });
+  }
+  async onGetNewRandomData() {
+    const { dispatch } = this.props;
+    try {
+      const num = await dispatch({
+        type: 'example/onGetNewRandomData',
+        payload: {
+        },
+      });
+      return num;
+    } catch (e) {
+      console.log('try catch', e);
+    }
+  }
+  onClick() {
+    this.generateNum = setInterval(() => {
+      this.onGetNewRandomData().then((res) => {
+        if (res % 2 === 0) {
+          clearInterval(this.generateNum);
+        }
+      });
+    }, 500);
+  }
+  handleInputChange = (e) => {
+    this.setState({ inputValue: e.target.value });
   }
   handleInputConfirm = () => {
     const state = this.state;
@@ -70,9 +86,21 @@ class IndexPage extends React.Component {
 
   render() {
     const { inputValue, checkedValues } = this.state;
-    const { tags } = this.props.example;
+    const { tags, randomNumber } = this.props.example;
     return (
       <div className={styles.normal}>
+        <Divider>点击生成偶数随机数</Divider>
+        <Row gutter={24}>
+          <Col span={12} >
+            {randomNumber}
+          </Col>
+          <Col span={12} >
+            <Button
+              onClick={this.onClick.bind(this)}
+            >获取随机数</Button>
+          </Col>
+        </Row>
+        <Divider />
         <Row>
           <Col span={12}>{(
             <Input
