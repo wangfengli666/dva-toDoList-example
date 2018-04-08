@@ -44,6 +44,33 @@ class IndexPage extends React.Component {
       try {
         setTimeout(() => {
           const num = Math.floor(Math.random() * 100);
+          console.log('onGetNewRandomData num', num);
+          resolve(num);
+        }, 500);
+      } catch (e) {
+        reject(e);
+      }
+    });
+  };
+  onGetNewRandomData2 = () => {
+    return new Promise((resolve, reject) => {
+      try {
+        setTimeout(() => {
+          const num = Math.floor(Math.random() * 100);
+          console.log('onGetNewRandomData2 num', num);
+          resolve(num);
+        }, 500);
+      } catch (e) {
+        reject(e);
+      }
+    });
+  };
+  onGetNewRandomData3 = () => {
+    return new Promise((resolve, reject) => {
+      try {
+        setTimeout(() => {
+          const num = Math.floor(Math.random() * 100);
+          console.log('onGetNewRandomData3 num', num);
           resolve(num);
         }, 500);
       } catch (e) {
@@ -52,14 +79,46 @@ class IndexPage extends React.Component {
     });
   };
   async onClick() {
-    const num = await this.onGetNewRandomData();
-    this.setState({
-      randomNumber: num,
-    }, () => {
-      if (num % 2 !== 0) {
-        this.onClick();
-      }
-    });
+    try {
+      const num = this.onGetNewRandomData();
+      num.then((res) => {
+        console.log('first res', res);
+        return Promise.resolve(res + 1);
+      }).then((res) => {
+        console.log('first res param', res);
+        return this.onGetNewRandomData2(res);
+      }).then((res) => {
+        console.log('second res', res);
+        this.setState({
+          randomNumber: res,
+        }, () => {
+          if (res % 2 !== 0) {
+            this.onClick();
+          }
+        });
+      });
+    } catch (e) {
+      console.log('catch', e);
+    }
+  }
+  async onClick2() {
+    try {
+      this.onGetNewRandomData()
+        .then(() => {
+          return Promise.all([
+            this.onGetNewRandomData3(),
+            this.onGetNewRandomData2(),
+          ]);
+        })
+        .then(() => {
+          console.log('all done');
+        })
+        .catch((e) => {
+          console.log('e: ', e);
+        });
+    } catch (e) {
+      console.log('catch', e);
+    }
   }
   handleInputChange = (e) => {
     this.setState({ inputValue: e.target.value });
@@ -89,13 +148,18 @@ class IndexPage extends React.Component {
       <div className={styles.normal}>
         <Divider>点击生成偶数随机数</Divider>
         <Row gutter={24}>
-          <Col span={12} >
+          <Col span={6} >
             {randomNumber}
           </Col>
-          <Col span={12} >
+          <Col span={6} >
             <Button
               onClick={this.onClick.bind(this)}
             >获取随机数</Button>
+          </Col>
+          <Col span={12} >
+            <Button
+              onClick={this.onClick2.bind(this)}
+            >PromiseAll</Button>
           </Col>
         </Row>
         <Divider />
